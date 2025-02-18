@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Length Converter</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            height: 100%;
+            overflow: hidden;
+        }
+        #welcome {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460);
+            color: white;
+            font-size: 3rem;
+            opacity: 1;
+            transition: opacity 1s ease-in-out;
+        }
+        #main {
+            display: none;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460);
+            color: rgb(0, 0, 0);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #character {
+            width: 100px;
+            height: 100px;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        #calculator {
+            max-width: 400px;
+            margin: 120px auto 0;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        input, select, button {
+            width: 47%;
+            padding: 13px;
+            margin: 16px 0;
+            border: none;
+            border-radius: 17px;
+            column-width: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            color: rgb(0, 0, 0);
+        }
+        button {
+            background: #e94560;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: #d13551;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        @media (max-width: 600px) {
+            #calculator {
+                margin-top: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="welcome">Welcome to Length Converter</div>
+    <div id="main">
+        <svg id="character" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="#4B5563" />
+            <circle cx="50" cy="50" r="35" fill="#1F2937" />
+            <circle cx="35" cy="40" r="10" fill="white" />
+            <circle cx="65" cy="40" r="10" fill="white" />
+            <circle id="leftEye" cx="35" cy="40" r="5" fill="#4B5563" />
+            <circle id="rightEye" cx="65" cy="40" r="5" fill="#4B5563" />
+            <path d="M 35 65 Q 50 80 65 65" stroke="white" stroke-width="3" fill="none" />
+        </svg>
+        <div id="calculator">
+            <input type="number" id="input" placeholder="Enter value">
+            <select id="fromUnit">
+                <option value="mm">Millimeter (mm)</option>
+                <option value="cm">Centimeter (cm)</option>
+                <option value="m" selected>Meter (m)</option>
+                <option value="km">Kilometer (km)</option>
+                <option value="in">Inch (in)</option>
+                <option value="ft">Foot (ft)</option>
+                <option value="yd">Yard (yd)</option>
+                <option value="mi">Mile (mi)</option>
+            </select>
+            <select id="toUnit">
+                <option value="mm">Millimeter (mm)</option>
+                <option value="cm" selected>Centimeter (cm)</option>
+                <option value="m">Meter (m)</option>
+                <option value="km">Kilometer (km)</option>
+                <option value="in">Inch (in)</option>
+                <option value="ft">Foot (ft)</option>
+                <option value="yd">Yard (yd)</option>
+                <option value="mi">Mile (mi)</option>
+            </select>
+            <button onclick="convert()">Convert</button>
+            <div id="result"></div>
+        </div>
+    </div>
+    <script>
+        const welcome = document.getElementById('welcome');
+        const main = document.getElementById('main');
+        const character = document.getElementById('character');
+        const leftEye = document.getElementById('leftEye');
+        const rightEye = document.getElementById('rightEye');
+
+        setTimeout(() => {
+            welcome.style.opacity = '0';
+            setTimeout(() => {
+                welcome.style.display = 'none';
+                main.style.display = 'block';
+            }, 1000);
+        }, 2000);
+
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth - 0.5;
+            const y = e.clientY / window.innerHeight - 0.5;
+            
+            leftEye.setAttribute('cx', 35 + x * 5);
+            leftEye.setAttribute('cy', 40 + y * 5);
+            rightEye.setAttribute('cx', 65 + x * 5);
+            rightEye.setAttribute('cy', 40 + y * 5);
+        });
+
+        const conversionFactors = {
+            mm: 0.001,
+            cm: 0.01,
+            m: 1,
+            km: 1000,
+            in: 0.0254,
+            ft: 0.3048,
+            yd: 0.9144,
+            mi: 1609.34
+        };
+
+        function convert() {
+            const input = parseFloat(document.getElementById('input').value);
+            const fromUnit = document.getElementById('fromUnit').value;
+            const toUnit = document.getElementById('toUnit').value;
+            const result = document.getElementById('result');
+
+            if (isNaN(input)) {
+                result.textContent = 'Please enter a valid number';
+                return;
+            }
+
+            const meters = input * conversionFactors[fromUnit];
+            const converted = meters / conversionFactors[toUnit];
+            
+            result.textContent = `${input} ${fromUnit} = ${converted.toFixed(6)} ${toUnit}`;
+        }
+    </script>
+</body>
+</html>
